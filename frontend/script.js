@@ -1,40 +1,92 @@
 const API_BASE = "http://localhost:8000";
 
-// Recebe também o elemento clicado para mudar a cor para verde
-function showTab(tabId, element) {
-    // Esconde todas as seções
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
+// Senha simples do painel ADM (apenas para esconder de visitantes
+// NÃO é segurança real, a validação deve ser feita no backend
+const ADM_SENHA = "finoajuste2026";
+let admAutenticado = false;
 
-    // Mostra a seção desejada
-    document.getElementById(tabId).classList.add('active');
+// Navegação por abas
+function showTab(tabId, linkEl) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    const alvo = document.getElementById(tabId);
+    if (alvo) alvo.classList.add('active');
 
-    // Remove a classe active (cor verde) de todos os links do menu
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
+    // Atualiza o link ativo no menu
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const link = linkEl || document.querySelector(`.nav-link[data-tab="${tabId}"]`);
+    if (link) link.classList.add('active');
 
-    // Se a função foi chamada por um clique em link, colore ele de verde
-    if (element) {
-        element.classList.add('active');
-    }
+    // Fecha o menu mobile, se aberto
+    document.getElementById('mainNav')?.classList.remove('open');
+    const toggle = document.getElementById('navToggle');
+    if (toggle) toggle.setAttribute('aria-expanded', 'false');
 
+    // Sobe a página
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Ao abrir ADM, mostra login ou painel conforme o estado
     if (tabId === 'adm') {
-        carregarOrcamentos();
+        if (admAutenticado) {
+            mostrarPainelAdm();
+        } else {
+            document.getElementById('admLogin').classList.remove('hidden');
+            document.getElementById('admPainel').classList.add('hidden');
+        }
     }
 }
 
+// Menu (mobile)
+document.getElementById('navToggle')?.addEventListener('click', () => {
+    const nav = document.getElementById('mainNav');
+    const aberto = nav.classList.toggle('open');
+    document.getElementById('navToggle').setAttribute('aria-expanded', aberto ? 'true' : 'false');
+});
+
+
+// Carrossel da página inicial
+let slideAtual = 0;
+let carrosselTimer = null;
+const totalSlides = 3;
+
+function atualizarCarrossel() {
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+    track.style.transform = `translateX(-${slideAtual * 100}%)`;
+    document.querySelectorAll('#carouselDots .dot').forEach((d, i) => {
+        d.classList.toggle('active', i === slideAtual);
+    });
+}
+
+function moverCarrossel(dir) {
+    slideAtual = (slideAtual + dir + totalSlides) % totalSlides;
+    atualizarCarrossel();
+    reiniciarAutoplay();
+}
+
+function irParaSlide(i) {
+    slideAtual = i;
+    atualizarCarrossel();
+    reiniciarAutoplay();
+}
+
+function reiniciarAutoplay() {
+    clearInterval(carrosselTimer);
+    carrosselTimer = setInterval(() => moverCarrossel(1), 6000);
+}
+
+reiniciarAutoplay();
+
+// Carregamento do forms
 function showStatus(elementId, message, tipo) {
     const el = document.getElementById(elementId);
+    if (!el) return;
     el.textContent = message;
     el.className = `form-status ${tipo}`; // 'sucesso' | 'erro' | 'carregando'
     el.classList.remove('hidden');
 }
 
 function hideStatus(elementId) {
-    const el = document.getElementById(elementId);
-    el.classList.add('hidden');
+    document.getElementById(elementId)?.classList.add('hidden');
 }
 
 function setLoadingBtn(loading) {
@@ -46,19 +98,29 @@ function setLoadingBtn(loading) {
     loader.classList.toggle('hidden', !loading);
 }
 
-// ============================================================
-// Submissão do Formulário
-// ============================================================
+
+// Envio do Formulário — fluxo em 2 etapas:
+//   1. POST /clientes/ -> cria o cliente e recebe cliente_id
+//   2. POST /orcamentos/ -> cria o orçamento com cliente_id + medidas
 document.getElementById('formOrcamento').addEventListener('submit', async (e) => {
     e.preventDefault();
     hideStatus('formStatus');
+
+    // Validação simples do cliente
+    const form = document.getElementById('formOrcamento');
+    if (!form.checkValidity()) {
+        showStatus('formStatus', '⚠️ Por favor, preencha todos os campos antes de enviar.', 'erro');
+        form.reportValidity();
+        return;
+    }
+
     setLoadingBtn(true);
 
     const nome = document.getElementById('nome').value.trim();
     const sobrenome = document.getElementById('sobrenome').value.trim();
 
     const clienteData = {
-        nome_completo: `${nome} ${sobrenome}`,
+        nome_completo: `${nome} ${sobrenome}`.trim(),
         cpf: document.getElementById('cpf').value.trim(),
         contato: document.getElementById('contato').value.trim(),
         cep: document.getElementById('cep').value.trim(),
@@ -81,6 +143,7 @@ document.getElementById('formOrcamento').addEventListener('submit', async (e) =>
     };
 
     try {
+        // Etapa 1 — Criar cliente
         showStatus('formStatus', '⏳ Registrando dados do cliente...', 'carregando');
         const resCliente = await fetch(`${API_BASE}/clientes/`, {
             method: 'POST',
@@ -90,11 +153,12 @@ document.getElementById('formOrcamento').addEventListener('submit', async (e) =>
 
         if (!resCliente.ok) {
             const err = await resCliente.json().catch(() => ({}));
-            throw new Error(err.detail || `Erro ao registrar cliente (${resCliente.status})`);
+            throw new Error(extrairErro(err) || `Erro ao registrar cliente (${resCliente.status})`);
         }
 
         const cliente = await resCliente.json();
 
+        // Etapa 2 — Criar orçamento vinculado ao cliente
         showStatus('formStatus', '⏳ Registrando orçamento...', 'carregando');
         const resOrcamento = await fetch(`${API_BASE}/orcamentos/`, {
             method: 'POST',
@@ -104,23 +168,62 @@ document.getElementById('formOrcamento').addEventListener('submit', async (e) =>
 
         if (!resOrcamento.ok) {
             const err = await resOrcamento.json().catch(() => ({}));
-            throw new Error(err.detail || `Erro ao registrar orçamento (${resOrcamento.status})`);
+            throw new Error(extrairErro(err) || `Erro ao registrar orçamento (${resOrcamento.status})`);
         }
 
         showStatus('formStatus', '✅ Orçamento enviado com sucesso! Entraremos em contato em breve.', 'sucesso');
-        document.getElementById('formOrcamento').reset();
+        form.reset();
 
     } catch (error) {
         console.error('Erro no envio:', error);
-        showStatus('formStatus', `❌ ${error.message || 'Erro de conexão com o servidor. Verifique se o backend está rodando.'}`, 'erro');
+        showStatus('formStatus',
+            `❌ ${error.message || 'Erro de conexão com o servidor. Verifique se o backend está rodando.'}`,
+            'erro');
     } finally {
         setLoadingBtn(false);
     }
 });
 
-// ============================================================
+// Extrai mensagem de erro do formato de validação do FastAPI/Pydantic
+function extrairErro(err) {
+    if (!err || !err.detail) return null;
+    if (typeof err.detail === 'string') return err.detail;
+    if (Array.isArray(err.detail)) {
+        return err.detail.map(d => d.msg || JSON.stringify(d)).join(' · ');
+    }
+    return null;
+}
+
+// Login do painel ADM (proteção simples no frontend)
+document.getElementById('formLogin')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const senha = document.getElementById('admSenha').value;
+    const erro = document.getElementById('loginErro');
+
+    if (senha === ADM_SENHA) {
+        admAutenticado = true;
+        erro.classList.add('hidden');
+        document.getElementById('admSenha').value = '';
+        mostrarPainelAdm();
+    } else {
+        erro.classList.remove('hidden');
+        document.getElementById('admSenha').value = '';
+    }
+});
+
+function mostrarPainelAdm() {
+    document.getElementById('admLogin').classList.add('hidden');
+    document.getElementById('admPainel').classList.remove('hidden');
+    carregarOrcamentos();
+}
+
+function logoutAdm() {
+    admAutenticado = false;
+    document.getElementById('admPainel').classList.add('hidden');
+    document.getElementById('admLogin').classList.remove('hidden');
+}
+
 // Painel ADM
-// ============================================================
 async function carregarOrcamentos() {
     const tbody = document.getElementById('tabelaAdmBody');
     tbody.innerHTML = '<tr><td colspan="18" style="text-align:center; opacity:0.6;">Carregando...</td></tr>';
@@ -152,7 +255,6 @@ async function carregarOrcamentos() {
         orcamentos.forEach(orc => {
             const cliente = clienteMap[orc.cliente_id] || {};
             const tr = document.createElement('tr');
-
             tr.innerHTML = `
                 <td contenteditable="true" data-field="nome_completo">${cliente.nome_completo || ''}</td>
                 <td contenteditable="true" data-field="cpf">${cliente.cpf || ''}</td>
@@ -163,7 +265,7 @@ async function carregarOrcamentos() {
                 <td contenteditable="true" data-field="bairro">${cliente.bairro || ''}</td>
                 <td contenteditable="true" data-field="cidade">${cliente.cidade || ''}</td>
                 <td contenteditable="true" data-field="pais">${cliente.pais || ''}</td>
-                
+
                 <td contenteditable="true" data-field="cor">${orc.cor || ''}</td>
                 <td contenteditable="true" data-field="material">${orc.material || ''}</td>
                 <td contenteditable="true" data-field="corte">${orc.corte || ''}</td>
@@ -172,7 +274,7 @@ async function carregarOrcamentos() {
                 <td contenteditable="true" data-field="comp_tronco">${orc.comp_tronco || ''}</td>
                 <td contenteditable="true" data-field="comp_perna">${orc.comp_perna || ''}</td>
                 <td contenteditable="true" data-field="comp_bracos">${orc.comp_bracos || ''}</td>
-                
+
                 <td class="acoes-col">
                     <button class="btn-atualizar" onclick="salvarAtualizacao(this, ${cliente.id}, ${orc.id})">Atualizar</button>
                     <button class="btn-deletar" onclick="deletarOrcamento(${orc.id}, ${cliente.id}, this)">Deletar</button>
@@ -184,13 +286,11 @@ async function carregarOrcamentos() {
     } catch (error) {
         console.error('Erro ao carregar orçamentos:', error);
         tbody.innerHTML = '';
-        showStatus('admStatus', `❌ Erro de conexão com o servidor.`, 'erro');
+        showStatus('admStatus', '❌ Erro de conexão com o servidor. Verifique se o backend está rodando.', 'erro');
     }
 }
 
-// ============================================================
-// Salvar Atualização Direta
-// ============================================================
+// Salvar atualização direta da tabela
 async function salvarAtualizacao(btnEl, clienteId, orcamentoId) {
     const tr = btnEl.closest('tr');
     const getVal = (field) => tr.querySelector(`td[data-field="${field}"]`).innerText.trim();
@@ -219,7 +319,7 @@ async function salvarAtualizacao(btnEl, clienteId, orcamentoId) {
     };
 
     btnEl.disabled = true;
-    btnEl.textContent = '...';
+    btnEl.textContent = 'Salvando...';
 
     try {
         const [resCliente, resOrcamento] = await Promise.all([
@@ -236,17 +336,13 @@ async function salvarAtualizacao(btnEl, clienteId, orcamentoId) {
         ]);
 
         if (resCliente.ok && resOrcamento.ok) {
-            btnEl.textContent = 'Salvo!';
-            btnEl.style.backgroundColor = '#214E34';
-
+            btnEl.textContent = 'Salvo! ✓';
             setTimeout(() => {
                 btnEl.textContent = 'Atualizar';
-                btnEl.style.backgroundColor = '';
                 btnEl.disabled = false;
             }, 2000);
-
         } else {
-            throw new Error("Erro na validação do servidor.");
+            throw new Error('Erro na validação do servidor.');
         }
 
     } catch (error) {
@@ -258,9 +354,7 @@ async function salvarAtualizacao(btnEl, clienteId, orcamentoId) {
 }
 
 
-// ============================================================
-// Deletar orçamento e cliente associado
-// ============================================================
+// Deleta orçamento (primeiro orçamento, depois cliente)
 async function deletarOrcamento(orcamentoId, clienteId, btnEl) {
     if (!confirm('Tem certeza que deseja deletar este orçamento e todos os dados do cliente associado?')) return;
 
@@ -268,14 +362,14 @@ async function deletarOrcamento(orcamentoId, clienteId, btnEl) {
     btnEl.textContent = '...';
 
     try {
-        // 1. Deleta a tabela filha primeiro (Orçamento)
+        // 1. Deleta a tabela filha primeiro (orçamento)
         const resOrcamento = await fetch(`${API_BASE}/orcamentos/${orcamentoId}`, {
             method: 'DELETE'
         });
 
         if (resOrcamento.ok || resOrcamento.status === 204) {
 
-            // 2. Deleta a tabela pai na sequência (Cliente)
+            // 2. Deleta a tabela pai na sequência (cliente)
             await fetch(`${API_BASE}/clientes/${clienteId}`, {
                 method: 'DELETE'
             });
@@ -302,50 +396,3 @@ async function deletarOrcamento(orcamentoId, clienteId, btnEl) {
         btnEl.textContent = 'Deletar';
     }
 }
-
-// ============================================================
-// Carrossel de Imagens (Início)
-// ============================================================
-let slideIndex = 0;
-let carrosselTimer;
-
-function mostrarSlide(index) {
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
-
-    if (slides.length === 0) return;
-
-    // Lógica para dar a volta (ir pro final se passar do início, e vice-versa)
-    if (index >= slides.length) slideIndex = 0;
-    if (index < 0) slideIndex = slides.length - 1;
-
-    // Remove classe 'active' de tudo
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
-
-    // Adiciona apenas no slide atual
-    slides[slideIndex].classList.add('active');
-    dots[slideIndex].classList.add('active');
-}
-
-function mudarSlide(index) {
-    slideIndex = index;
-    mostrarSlide(slideIndex);
-    resetarTimer(); // Reinicia o tempo se o usuário clicar
-}
-
-function passarSlideAutomatico() {
-    slideIndex++;
-    mostrarSlide(slideIndex);
-}
-
-function resetarTimer() {
-    clearInterval(carrosselTimer);
-    carrosselTimer = setInterval(passarSlideAutomatico, 5000); // Troca a cada 5 segundos
-}
-
-// Inicia o carrossel assim que a página carrega
-document.addEventListener('DOMContentLoaded', () => {
-    mostrarSlide(slideIndex);
-    resetarTimer();
-});

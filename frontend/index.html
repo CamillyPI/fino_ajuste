@@ -5,196 +5,505 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Fino Ajuste — Alfaiataria sob medida de alto padrão. Solicite seu orçamento personalizado.">
+        content="Fino Ajuste — Alfaiataria sob medida de alto padrão. Ternos exclusivos, precisão artesanal e atendimento personalizado. Solicite seu orçamento.">
     <title>Fino Ajuste | Alfaiataria Sob Medida</title>
+    <link rel="icon" type="image/png" href="img/logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
-        <div class="logo">Fino Ajuste</div>
-        <nav>
+        <div class="logo" onclick="showTab('inicio')">
+            <span class="logo-mark">
+                <img src="img/logo.png" alt="Fino Ajuste" class="logo-img"
+                    onerror="this.closest('.logo-mark').classList.add('sem-logo'); this.remove();">
+            </span>
+            <span class="logo-text">
+                Fino Ajuste
+                <small>Alfaiataria sob medida</small>
+            </span>
+        </div>
+
+        <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+
+        <nav id="mainNav">
             <ul>
-                <li><a href="#" class="nav-link active" onclick="showTab('inicio', this)">Início</a></li>
-                <li><a href="#" class="nav-link" onclick="showTab('galeria', this)">Galeria</a></li>
-                <li><a href="#" class="nav-link" onclick="showTab('orcamentos', this)">Orçamentos</a></li>
-                <li><a href="#" class="nav-link" onclick="showTab('sobre', this)">Sobre Nós</a></li>
-                <li><a href="#" class="nav-link" onclick="showTab('adm', this)">ADM</a></li>
+                <li><a href="#" class="nav-link active" data-tab="inicio" onclick="showTab('inicio', this)">Início</a>
+                </li>
+                <li><a href="#" class="nav-link" data-tab="galeria" onclick="showTab('galeria', this)">Coleção</a></li>
+                <li><a href="#" class="nav-link" data-tab="orcamentos"
+                        onclick="showTab('orcamentos', this)">Orçamentos</a></li>
+                <li><a href="#" class="nav-link" data-tab="sobre" onclick="showTab('sobre', this)">Sobre Nós</a></li>
+                <li><a href="#" class="nav-link nav-adm" data-tab="adm" onclick="showTab('adm', this)">ADM</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
+        <!-- ============ INÍCIO ============ -->
         <section id="inicio" class="tab-content active">
-            <div class="carousel-container">
-
-                <div class="slide active">
-                    <img src="utils/imagem_inicio1.jpg" alt="Ternos para ocasiões especiais">
-                    <div class="slide-text">
-                        <h2>Os melhores ternos<br>para as melhores ocasiões</h2>
+            <div class="hero">
+                <div class="carousel" id="carousel">
+                    <div class="carousel-track" id="carouselTrack">
+                        <div class="slide" style="background-image:url('img/terno-azul-marinho.jpg')">
+                            <div class="slide-overlay">
+                                <p class="eyebrow">Desde o primeiro contato à última costura</p>
+                                <h1>O terno que veste <em>quem você é</em></h1>
+                                <p class="hero-sub">Alfaiataria sob medida, com precisão artesanal e elegância
+                                    contemporânea.</p>
+                                <button class="btn-primary" onclick="showTab('orcamentos')">Solicitar orçamento</button>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image:url('img/terno-bege.jpg')">
+                            <div class="slide-overlay">
+                                <p class="eyebrow">Exclusividade com propósito</p>
+                                <h1>Cada peça é <em>única</em></h1>
+                                <p class="hero-sub">Feita para uma pessoa — não para um mercado.</p>
+                                <button class="btn-primary" onclick="showTab('galeria')">Ver galeria</button>
+                            </div>
+                        </div>
+                        <div class="slide" style="background-image:url('img/terno-grafite.jpg')">
+                            <div class="slide-overlay">
+                                <p class="eyebrow">Tradição e inovação</p>
+                                <h1>O caimento <em>perfeito</em></h1>
+                                <p class="hero-sub">Honramos a alfaiataria clássica, vestindo o homem contemporâneo.</p>
+                                <button class="btn-primary" onclick="showTab('sobre')">Conheça a Fino Ajuste</button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-arrow prev" onclick="moverCarrossel(-1)"
+                        aria-label="Anterior">&#10094;</button>
+                    <button class="carousel-arrow next" onclick="moverCarrossel(1)"
+                        aria-label="Próximo">&#10095;</button>
+                    <div class="dots" id="carouselDots">
+                        <span class="dot active" onclick="irParaSlide(0)"></span>
+                        <span class="dot" onclick="irParaSlide(1)"></span>
+                        <span class="dot" onclick="irParaSlide(2)"></span>
                     </div>
                 </div>
+            </div>
 
-                <div class="slide">
-                    <img src="utils/imagem_inicio2.jpg" alt="Alfaiataria clássica">
-                    <div class="slide-text">
-                        <h2>A arte da alfaiataria<br>feita sob medida</h2>
-                    </div>
+            <div class="features">
+                <div class="feature">
+                    <span class="feature-num">01</span>
+                    <h3>Precisão artesanal</h3>
+                    <p>Do corte à bainha, buscamos a perfeição em cada ponto.</p>
                 </div>
-
-                <div class="slide">
-                    <img src="utils/imagem_inicio3.jpg" alt="Elegância masculina">
-                    <div class="slide-text">
-                        <h2>Elegância, conforto e<br>um caimento perfeito</h2>
-                    </div>
+                <div class="feature">
+                    <span class="feature-num">02</span>
+                    <h3>Escuta ativa</h3>
+                    <p>Entendemos quem é o cliente antes de pegar o tecido.</p>
                 </div>
-
-                <div class="dots">
-                    <span class="dot active" onclick="mudarSlide(0)"></span>
-                    <span class="dot" onclick="mudarSlide(1)"></span>
-                    <span class="dot" onclick="mudarSlide(2)"></span>
+                <div class="feature">
+                    <span class="feature-num">03</span>
+                    <h3>Elegância acessível</h3>
+                    <p>Vestir-se bem é um direito, não um privilégio de poucos.</p>
                 </div>
-
             </div>
         </section>
 
+        <!-- ============ GALERIA ============ -->
         <section id="galeria" class="tab-content">
-            <div class="grid-galeria">
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo1.jpg" alt="Terno Slim Fit">
+            <div class="section-head">
+                <p class="eyebrow">Coleção</p>
+                <h2>Cortes, Modelos &amp; Tecidos</h2>
+                <p class="section-lead">Antes de escolher a cor, vale entender o que torna cada terno único. Abaixo, as
+                    modelagens, os modelos e os tecidos com que trabalhamos — e, ao final, nossas peças como exemplos de
+                    cor.</p>
+            </div>
+
+            <!-- Modelagens / cortes -->
+            <div class="col-bloco">
+                <h3 class="col-titulo">Modelagens <span>o caimento no corpo</span></h3>
+                <div class="info-grid">
+                    <article class="info-card">
+                        <h4>Slim Fit</h4>
+                        <p>Corte mais ajustado ao corpo, com visual moderno e "seco". É a modelagem mais procurada.</p>
+                        <span class="info-tag">Ajustado moderno</span>
+                    </article>
+                    <article class="info-card">
+                        <h4>Skinny</h4>
+                        <p>Ainda mais justo que o slim, colado ao corpo e com pegada fashion.</p>
+                        <span class="info-tag">Super justo</span>
+                    </article>
+                    <article class="info-card">
+                        <h4>Regular / Clássico / Executivo</h4>
+                        <p>Modelagem tradicional e confortável, menos apertada. Também chamada de "Classic".</p>
+                        <span class="info-tag">Solto e clássico</span>
+                    </article>
+                    <article class="info-card">
+                        <h4>Plus Size / Extra Grande</h4>
+                        <p>Corte pensado para tamanhos maiores, priorizando conforto e mobilidade.</p>
+                        <span class="info-tag">Conforto amplo</span>
+                    </article>
                 </div>
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo2.jpg" alt="Terno Clássico Italiano">
+            </div>
+
+            <!-- Modelos de terno -->
+            <div class="col-bloco">
+                <h3 class="col-titulo">Modelos de terno <span>estilos e ocasiões</span></h3>
+                <div class="info-grid">
+                    <article class="info-card">
+                        <h4>Tradicional (Classic Fit)</h4>
+                        <p>Corte reto e confortável, visual clássico e formal. Ideal para trabalho e cerimônias.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Slim Fit</h4>
+                        <p>Mais ajustado ao corpo, com paletó acinturado e calça afunilada. Moderno e elegante.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Skinny</h4>
+                        <p>Extremamente justo, de pegada fashion e jovem. Comum em eventos modernos.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Smoking</h4>
+                        <p>O mais formal: lapela em cetim ou seda e gravata borboleta. Casamentos de gala e formaturas.
+                        </p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Italiano</h4>
+                        <p>Corte elegante e mais justo, ombros marcados e cintura ajustada. Sofisticado.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Britânico (Inglês)</h4>
+                        <p>Estrutura mais rígida, ombros fortes e caimento elegante. Clássico e refinado.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Americano</h4>
+                        <p>Mais amplo e confortável, menos estruturado. Muito usado no ambiente corporativo.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>2 peças</h4>
+                        <p>Paletó + calça. O conjunto mais comum no dia a dia.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>3 peças</h4>
+                        <p>Paletó + calça + colete. Mais sofisticado e social.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Blazer</h4>
+                        <p>Mais casual; combina com calça diferente ou jeans. Não exige conjunto.</p>
+                    </article>
                 </div>
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo3.jpg" alt="Terno Sob Medida">
+            </div>
+
+            <!-- Tecidos / materiais -->
+            <div class="col-bloco">
+                <h3 class="col-titulo">Tecidos <span>conforto, caimento e durabilidade</span></h3>
+                <div class="info-grid">
+                    <article class="info-card">
+                        <h4>Poliviscose</h4>
+                        <p>Mistura de poliéster e viscose. Bom caimento e ótimo custo-benefício para o dia a dia.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Poliéster</h4>
+                        <p>Mais resistente e menos amassado. Comum nas linhas slim e executivas.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Viscose</h4>
+                        <p>Toque macio e confortável, deixa a peça mais agradável de vestir.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Elastano</h4>
+                        <p>Presente em modelos "stretch". Melhora a mobilidade e o conforto.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Microfibra</h4>
+                        <p>Leve e prática, usada em ternos mais leves e de entrada.</p>
+                    </article>
+                    <article class="info-card">
+                        <h4>Veludo</h4>
+                        <p>Sofisticado e fashion, reservado a linhas e ocasiões especiais.</p>
+                    </article>
+                    <article class="info-card premium">
+                        <h4>Lã fria <span class="badge-premium">Premium</span></h4>
+                        <p>O tecido nobre da alfaiataria: caimento impecável e respirabilidade superior. Ideal para
+                            casamentos e uso frequente.</p>
+                    </article>
                 </div>
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo4.jpg" alt="Terno Sob Medida">
-                </div>
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo5.jpg" alt="Terno Sob Medida">
-                </div>
-                <div class="foto-modelo">
-                    <img src="utils/imagem_modelo6.jpg" alt="Terno Sob Medida">
+                <p class="col-nota">Para algo mais refinado — casamentos ou uso frequente — recomendamos tecidos com
+                    maior teor de viscose, elastano moderado ou lã fria. Para o trabalho diário, a poliviscose entrega
+                    excelente custo-benefício.</p>
+            </div>
+
+            <!-- Exemplos de cor (fotos) -->
+            <div class="col-bloco">
+                <h3 class="col-titulo">Exemplos de cor <span>nossas peças sob medida</span></h3>
+                <div class="grid-galeria">
+                    <figure class="foto-modelo">
+                        <img src="img/terno-preto.jpg" alt="Terno preto sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Preto</strong><span>Lã premium · corte slim</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-azul-marinho.jpg" alt="Terno azul-marinho sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Azul-Marinho</strong><span>O clássico atemporal</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-cinza.jpg" alt="Terno cinza sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Cinza</strong><span>Versátil para o dia a dia</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-grafite.jpg" alt="Terno grafite sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Grafite</strong><span>Sobriedade com presença</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-marrom.jpg" alt="Terno marrom sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Marrom</strong><span>Calor e personalidade</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-risca-de-giz.jpg" alt="Terno risca de giz sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Risca de Giz</strong><span>Alfaiataria executiva</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-bege.jpg" alt="Terno bege sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Bege</strong><span>Leveza para ocasiões diurnas</span></figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/terno-verde-oliva.jpg" alt="Terno verde-oliva sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Terno Verde-Oliva</strong><span>Para quem ousa com classe</span>
+                        </figcaption>
+                    </figure>
+                    <figure class="foto-modelo">
+                        <img src="img/colete-preto.jpg" alt="Colete sob medida" loading="lazy"
+                            onerror="this.closest('.foto-modelo').classList.add('sem-img'); this.remove();">
+                        <figcaption><strong>Colete sob medida</strong><span>O detalhe que distingue</span></figcaption>
+                    </figure>
                 </div>
             </div>
         </section>
 
+        <!-- ============ ORÇAMENTOS ============ -->
         <section id="orcamentos" class="tab-content">
-            <div id="formStatus" class="form-status hidden"></div>
+            <div class="section-head">
+                <p class="eyebrow">Vamos começar</p>
+                <h2>Solicite seu Orçamento</h2>
+                <p class="section-lead">Preencha seus dados e medidas. Entraremos em contato para alinhar cada
+                    detalhe.</p>
+            </div>
 
-            <form id="formOrcamento" class="form-container" novalidate>
-                <fieldset class="form-card">
-                    <legend>Dados Pessoais</legend>
-                    <div class="input-grid">
-                        <input type="text" id="nome" placeholder="Nome" required>
-                        <input type="text" id="sobrenome" placeholder="Sobrenome" required>
-                        <input type="text" id="cpf" placeholder="CPF" required>
-                        <input type="text" id="contato" placeholder="Contato (Whatsapp)" required>
+            <div class="orcamento-layout">
+                <aside class="orcamento-aside">
+                    <div class="aside-card">
+                        <h3>Entre em contato</h3>
+                        <p>Prefere falar com a gente diretamente? Estamos à disposição para tirar dúvidas antes mesmo do
+                            primeiro corte.</p>
+                        <ul class="contato-list">
+                            <li><strong>WhatsApp</strong><span>(11) 99999-0000</span></li>
+                            <li><strong>E-mail</strong><span>contato@finoajuste.com.br</span></li>
+                            <li><strong>Atelier</strong><span>São Paulo · SP</span></li>
+                        </ul>
+                        <p class="aside-note">O terno começa no diálogo.</p>
                     </div>
-                </fieldset>
+                </aside>
 
-                <fieldset class="form-card">
-                    <legend>Endereço</legend>
-                    <div class="input-grid">
-                        <input type="text" id="cep" placeholder="CEP" required>
-                        <input type="text" id="rua" placeholder="Rua" required>
-                        <input type="text" id="numero" placeholder="Número" required>
-                        <input type="text" id="bairro" placeholder="Bairro" required>
-                        <input type="text" id="cidade" placeholder="Cidade" required>
-                        <input type="text" id="pais" placeholder="País" required>
-                    </div>
-                </fieldset>
+                <div class="orcamento-form-wrap">
+                    <div id="formStatus" class="form-status hidden"></div>
 
-                <fieldset class="form-card">
-                    <legend>Medidas</legend>
-                    <div class="input-grid">
-                        <input type="text" id="cor" placeholder="Cor de preferência" required>
-                        <input type="text" id="material" placeholder="Material" required>
-                        <input type="text" id="corte" placeholder="Tipo de Corte" required>
-                        <input type="text" id="quadril" placeholder="Quadril (cm)" required>
-                        <input type="text" id="ombros" placeholder="Ombros (cm)" required>
-                        <input type="text" id="comp_tronco" placeholder="Comp. do Tronco (cm)" required>
-                        <input type="text" id="comp_perna" placeholder="Comp. da Perna (cm)" required>
-                        <input type="text" id="comp_bracos" placeholder="Comp. dos Braços (cm)" required>
-                    </div>
-                </fieldset>
+                    <form id="formOrcamento" novalidate>
+                        <fieldset>
+                            <legend>Dados Pessoais</legend>
+                            <div class="grid-inputs">
+                                <input type="text" id="nome" placeholder="Nome" required>
+                                <input type="text" id="sobrenome" placeholder="Sobrenome" required>
+                                <input type="text" id="cpf" placeholder="CPF" required>
+                                <input type="text" id="contato" placeholder="Contato (Telefone/E-mail)" required>
+                            </div>
+                        </fieldset>
 
-                <div class="btn-container">
-                    <button type="submit" id="btnEnviar">
-                        <span id="btnTexto">Enviar Orçamento</span>
-                        <span id="btnLoader" class="hidden">Enviando...</span>
-                    </button>
+                        <fieldset>
+                            <legend>Endereço</legend>
+                            <div class="grid-inputs">
+                                <input type="text" id="cep" placeholder="CEP" required>
+                                <input type="text" id="rua" placeholder="Rua" required>
+                                <input type="text" id="numero" placeholder="Número" required>
+                                <input type="text" id="bairro" placeholder="Bairro" required>
+                                <input type="text" id="cidade" placeholder="Cidade" required>
+                                <input type="text" id="pais" placeholder="País" required>
+                            </div>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Detalhes da Peça e Medidas</legend>
+                            <div class="grid-inputs">
+                                <input type="text" id="cor" placeholder="Cor de preferência" required>
+                                <input type="text" id="material" placeholder="Material" required>
+                                <input type="text" id="corte" placeholder="Tipo de Corte" required>
+                                <input type="text" id="quadril" placeholder="Quadril (cm)" required>
+                                <input type="text" id="ombros" placeholder="Ombros (cm)" required>
+                                <input type="text" id="comp_tronco" placeholder="Comp. do Tronco (cm)" required>
+                                <input type="text" id="comp_perna" placeholder="Comp. da Perna (cm)" required>
+                                <input type="text" id="comp_bracos" placeholder="Comp. dos Braços (cm)" required>
+                            </div>
+                        </fieldset>
+
+                        <button type="submit" id="btnEnviar" class="btn-primary">
+                            <span id="btnTexto">Enviar Orçamento</span>
+                            <span id="btnLoader" class="hidden">Enviando...</span>
+                        </button>
+                    </form>
                 </div>
-            </form>
+            </div>
         </section>
 
+        <!-- ============ SOBRE NÓS ============ -->
         <section id="sobre" class="tab-content">
-            <div class="sobre-container">
-                <h2>Quem somos</h2>
-                <p>A Fino Ajuste nasceu da paixão pela elegância masculina e pela arte da alfaiataria. Fundada com o
-                    objetivo de oferecer ternos de alta qualidade para diferentes estilos e ocasiões,
-                    a marca surgiu ao perceber a necessidade de unir sofisticação, conforto e excelente custo-benefício
-                    em
-                    um único lugar. Desde o início, a Fino Ajuste buscou selecionar modelos que valorizam a
-                    personalidade de cada cliente,
-                    oferecendo opções que vão desde o clássico Terno Tradicional até
-                    cortes modernos como o Slim Fit, além dos refinados estilos Italiano, Britânico e Americano. Com
-                    atenção
-                    aos detalhes e compromisso com a excelência, a empresa se consolidou como uma referência para homens
-                    que
-                    desejam vestir-se com elegância e confiança.</p>
+            <div class="section-head">
+                <p class="eyebrow">Missão · Visão · Valores</p>
+                <h2>Quem Somos</h2>
+                <p class="section-lead">A Fino Ajuste nasceu da paixão pela alfaiataria clássica combinada com a
+                    precisão moderna — uma experiência artesanal única, do primeiro contato à última costura.</p>
+            </div>
 
-                <h2 style="margin-top: 40px;">Nossos valores</h2>
-                <p>Na Fino Ajuste, acreditamos que vestir um bom terno vai além da aparência: é uma forma de transmitir
-                    confiança, profissionalismo e personalidade. Nossos valores são baseados em qualidade,
-                    respeito ao cliente, transparência e busca constante pela excelência. Entre nossos principais
-                    diferenciais estão a variedade de estilos disponíveis, o atendimento personalizado e a
-                    preocupação com o caimento perfeito de cada peça. Trabalhamos com modelos que atendem diferentes
-                    perfis
-                    e ocasiões, oferecendo desde opções clássicas para ambientes
-                    corporativos até ternos modernos para eventos sociais e celebrações especiais. Nosso compromisso é
-                    garantir que cada cliente encontre o traje ideal para destacar sua melhor versão.</p>
+            <div class="mvv">
+                <article class="mvv-card mvv-missao">
+                    <div class="mvv-head">
+                        <span class="mvv-icon">◉</span>
+                        <h3>Missão</h3>
+                    </div>
+                    <p>Vestir cada cliente com excelência e personalidade, criando ternos sob medida que expressam
+                        identidade, transmitem confiança e elevam a autoestima — por meio de uma experiência artesanal
+                        única, do primeiro contato à última costura.</p>
+                </article>
+
+                <article class="mvv-card mvv-visao">
+                    <div class="mvv-head">
+                        <span class="mvv-icon">◎</span>
+                        <h3>Visão</h3>
+                    </div>
+                    <p>Ser reconhecida até 2030 como a alfaiataria sob medida de referência no Brasil, sinônimo de
+                        elegância contemporânea, precisão artesanal e atendimento personalizado — presente nas ocasiões
+                        mais importantes da vida dos nossos clientes.</p>
+                </article>
+
+                <article class="mvv-card mvv-valores">
+                    <div class="mvv-head">
+                        <span class="mvv-icon">★</span>
+                        <h3>Valores</h3>
+                    </div>
+                    <div class="valores-grid">
+                        <div class="valor">
+                            <h4>Precisão artesanal</h4>
+                            <p>Cada detalhe importa. Do corte à bainha,
+                                buscamos a perfeição em cada ponto.</p>
+                        </div>
+                        <div class="valor">
+                            <h4>Escuta ativa</h4>
+                            <p>Entendemos quem é o cliente antes de pegar o tecido —
+                                o terno começa no diálogo.</p>
+                        </div>
+                        <div class="valor">
+                            <h4>Exclusividade com propósito</h4>
+                            <p>Cada peça é única — feita para uma
+                                pessoa, não para um mercado.</p>
+                        </div>
+                        <div class="valor">
+                            <h4>Tradição e inovação</h4>
+                            <p>Honramos a alfaiataria clássica, mas
+                                acompanhamos o homem contemporâneo.</p>
+                        </div>
+                        <div class="valor">
+                            <h4>Integridade</h4>
+                            <p>Transparência nos prazos, materiais e preços — sempre a
+                                roupa que foi prometida.</p>
+                        </div>
+                        <div class="valor">
+                            <h4>Elegância acessível</h4>
+                            <p>Acreditamos que vestir-se bem é um direito,
+                                não um privilégio de poucos.</p>
+                        </div>
+                    </div>
+                </article>
             </div>
         </section>
 
+        <!-- ============ ADM ============ -->
         <section id="adm" class="tab-content">
-            <div class="adm-header">
-                <span class="badge">Pedidos</span>
-                <div id="admStatus" class="form-status hidden"></div>
+            <!-- Login -->
+            <div id="admLogin" class="adm-login">
+                <div class="login-card">
+                    <p class="eyebrow">Área restrita</p>
+                    <h2>Painel Administrativo</h2>
+                    <p class="section-lead">Acesso exclusivo da equipe Fino Ajuste.</p>
+                    <form id="formLogin">
+                        <input type="password" id="admSenha" placeholder="Senha de acesso" autocomplete="off">
+                        <button type="submit" class="btn-primary">Entrar</button>
+                    </form>
+                    <p id="loginErro" class="login-erro hidden">Senha incorreta. Tente novamente.</p>
+                </div>
             </div>
 
-            <div class="table-container" style="overflow-x:auto;">
-                <table id="tabelaAdm">
-                    <thead>
-                        <tr>
-                            <th>Nome Completo</th>
-                            <th>CPF</th>
-                            <th>Contato</th>
-                            <th>CEP</th>
-                            <th>Rua</th>
-                            <th>Nº</th>
-                            <th>Bairro</th>
-                            <th>Cidade</th>
-                            <th>País</th>
-                            <th>Cor</th>
-                            <th>Material</th>
-                            <th>Corte</th>
-                            <th>Quadril</th>
-                            <th>Ombros</th>
-                            <th>Comp. Tronco</th>
-                            <th>Comp. Perna</th>
-                            <th>Comp. Braços</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaAdmBody">
-                    </tbody>
-                </table>
+            <!-- Painel -->
+            <div id="admPainel" class="adm-painel hidden">
+                <div class="section-head adm-head">
+                    <div>
+                        <p class="eyebrow">Gestão de pedidos</p>
+                        <h2>Orçamentos Recebidos</h2>
+                    </div>
+                    <div class="adm-actions">
+                        <!-- <button class="btn-secundario" onclick="carregarOrcamentos()">↻ Atualizar lista</button> -->
+                        <button class="btn-sair" onclick="logoutAdm()">Sair</button>
+                    </div>
+                </div>
+
+                <div id="admStatus" class="form-status hidden"></div>
+
+                <div class="tabela-wrap">
+                    <table id="tabelaAdm">
+                        <thead>
+                            <tr>
+                                <th>Nome Completo</th>
+                                <th>CPF</th>
+                                <th>Contato</th>
+                                <th>CEP</th>
+                                <th>Rua</th>
+                                <th>Nº</th>
+                                <th>Bairro</th>
+                                <th>Cidade</th>
+                                <th>País</th>
+                                <th>Cor</th>
+                                <th>Material</th>
+                                <th>Corte</th>
+                                <th>Quadril</th>
+                                <th>Ombros</th>
+                                <th>Comp. Tronco</th>
+                                <th>Comp. Perna</th>
+                                <th>Comp. Braços</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaAdmBody"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
     </main>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <span class="logo-mark small">
+                    <img src="img/logo.png" alt="Fino Ajuste" class="logo-img"
+                        onerror="this.closest('.logo-mark').classList.add('sem-logo'); this.remove();">
+                </span>
+                <div>
+                    <strong>Fino Ajuste</strong>
+                    <small>Alfaiataria sob medida</small>
+                </div>
+            </div>
+            <p class="footer-tag">Vestir-se bem é um direito, não um privilégio de poucos.</p>
+            <p class="footer-copy">© 2026 Fino Ajuste · Projeto extensionista</p>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
