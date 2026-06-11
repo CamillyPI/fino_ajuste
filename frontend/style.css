@@ -1,0 +1,390 @@
+/* Paleta e Variáveis */
+:root {
+    --color-primary: #011638;
+    --color-text-body: #364156;
+    --color-light-gray: #CDCDCD;
+    --color-bg-light: #DFF8EB;
+    --color-accent: #214E34;
+    --color-danger: #9c3c3c;
+    --color-border: #808080;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    /* Fundo branco para bater com o desenho */
+    color: var(--color-primary);
+}
+
+/* Header & Navegação */
+header {
+    background-color: #ffffff;
+    color: var(--color-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: normal;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+nav a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: var(--color-accent);
+}
+
+/* Aba ativa verde como no wireframe */
+nav a.active {
+    color: var(--color-accent);
+}
+
+/* Gerenciamento de Abas */
+.tab-content {
+    display: none;
+    padding: 40px 50px;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* --- SEÇÃO INÍCIO --- */
+.carousel-container {
+    width: 90%;
+    max-width: 1800px;
+    height: 580px;
+    margin: 0 auto;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    /* Oculta o que sai do quadro */
+}
+
+/* Estrutura de cada imagem que vai passar */
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+}
+
+.slide.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* Estilo da Imagem */
+.slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Degradê escuro para garantir que o texto branco dê para ler */
+.slide::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 80%);
+    pointer-events: none;
+}
+
+/* O texto sobre a imagem */
+.slide-text {
+    position: absolute;
+    top: 50%;
+    left: 8%;
+    transform: translateY(-50%);
+    z-index: 2;
+    color: white;
+}
+
+.slide-text h2 {
+    font-size: 38px;
+    font-weight: bold;
+    line-height: 1.3;
+    color: white;
+    /* Garante que ignore a cor global */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    /* Dá um destaque extra */
+}
+
+/* Navegação por bolinhas */
+.dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 3;
+    /* Fica acima da imagem e do degradê */
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active,
+.dot:hover {
+    background-color: white;
+}
+
+/* --- SEÇÃO GALERIA --- */
+.grid-galeria {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    gap: 80px 100px;
+    margin-top: 70px;
+}
+
+.foto-modelo {
+    width: 300px;
+    height: 420px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.foto-modelo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- SEÇÃO ORÇAMENTOS --- */
+.form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-card {
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px 30px;
+    background-color: white;
+}
+
+.form-card legend {
+    font-size: 14px;
+    color: var(--color-primary);
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+input {
+    padding: 12px;
+    border: none;
+    border-bottom: 1px solid var(--color-light-gray);
+    width: 100%;
+    background-color: transparent;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    border-bottom: 1px solid var(--color-accent);
+}
+
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+button {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--color-accent);
+}
+
+/* --- SEÇÃO SOBRE NÓS --- */
+.sobre-container {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.sobre-container h2 {
+    font-size: 22px;
+    font-weight: normal;
+    margin-bottom: 18px;
+    color: var(--color-primary);
+}
+
+.sobre-container p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--color-text-body);
+}
+
+/* --- SEÇÃO ADM --- */
+.adm-header {
+    margin-bottom: 10px;
+}
+
+.badge {
+    display: inline-block;
+    border: 1px solid var(--color-border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
+.table-container {
+    border: 1px solid var(--color-border);
+    border-radius: 0 8px 8px 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+th,
+td {
+    border: 1px solid var(--color-light-gray);
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+th {
+    background-color: #f9f9f9 !important;
+    color: var(--color-text-body) !important;
+    font-weight: normal;
+}
+
+/* Botões de Ação na Tabela */
+.btn-atualizar {
+    background-color: var(--color-text-body);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 12px;
+}
+
+.btn-deletar {
+    background-color: white;
+    color: var(--color-text-body);
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+    font-size: 12px;
+}
+
+.btn-deletar:hover {
+    background-color: #f4f4f4;
+}
+
+/* Utilitário */
+.hidden {
+    display: none !important;
+}
+
+.form-status {
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    border-left: 5px solid;
+}
+
+.form-status.sucesso {
+    background-color: #e6f9ed;
+    border-color: #214E34;
+    color: #174028;
+}
+
+.form-status.erro {
+    background-color: #fdecea;
+    border-color: #9c3c3c;
+    color: #7a2a2a;
+}
+
+.form-status.carregando {
+    background-color: #f0f4ff;
+    border-color: #364156;
+    color: #364156;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+td[contenteditable="true"]:focus {
+    background-color: #ffffff;
+    outline: 2px solid var(--color-accent);
+}
